@@ -32,13 +32,24 @@ doc_end =   [
 
 class Song:
     """
-    Class for a song
+    Class for a song.
     """
-    def __init__(self, name, org_song, lyrics):
+    def __init__(self, name, org_song, song_num, lyrics):
         self.name = name
         self.org_song = org_song
+        self.song_num = song_num
         self.lyrics = lyrics
 
+    def __cmp__(self, other):
+        return self.song_num > other.song_num
+
+def sortSongs(songs):
+    sorted_songs = []
+    for i in range(1, 1+len(songs)):
+        for song in songs:
+            if song.song_num == i:
+                sorted_songs.append(song)
+    return sorted_songs
 
 def readSongs(path_to_folder):
     """
@@ -51,7 +62,6 @@ def readSongs(path_to_folder):
         list of song objects
     """
     files = os.listdir(path_to_folder)
-    files.reverse()
     songs = []
     for file_name in files:
         f_song = open(path_to_folder + file_name, 'r')
@@ -64,8 +74,19 @@ def readSongs(path_to_folder):
         lyrics = []
         for line in f_song:
             lyrics.append(line.strip())
-        songs.append(Song(song_name, org_song, lyrics))
+        try:
+            song_num = int((file_name.split("/")[-1]).split("_")[0])
+        except:
+            print("Song name not in a correct format: {0}".format(filename.split("/")[-1]))
+            sys.exit()
+        
+        songs.append(Song(song_name, org_song, song_num, lyrics))
 
+    songs = sortSongs(songs)
+   
+    for s in songs:
+        print("{0} - {1}".format(s.song_num, s.name))
+ 
     return songs
 
 def createLasy(songs, book_name):
