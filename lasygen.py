@@ -68,7 +68,7 @@ def readSongs(path_to_folder):
 
     return songs
 
-def createLasy(songs):
+def createLasy(songs, book_name):
     """
     Function for creating the whole document and pasteing it into the folder of the user.
     """
@@ -93,16 +93,21 @@ def createLasy(songs):
     for line in doc_end:
         lasy.append(line)
 
-    f_open = open("lasy.tex", "w")
+    f_open = open(book_name, "w")
     for line in lasy:
         f_open.write(line + "\n")
 
 def main():
     if len(sys.argv) < 2:
         print("No song directory given for the program! Give the folder containing the files for the program as an argument!")
+    elif len(sys.argv) < 3:
+        print("no book name given to the program! Generating it as lasy.tex")
+        songs = readSongs(sys.argv[1])
+        createLasy(songs, "lasy.tex")
     else:
         songs = readSongs(sys.argv[1])
-        createLasy(songs)
+        createLasy(songs, sys.argv[2])
+    
 
 if __name__ == "__main__":
     main()
